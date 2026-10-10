@@ -27,11 +27,19 @@ select,input[type=number],input[type=text]{background:var(--c);border:1px solid 
 .pt div{border:1px solid var(--b);border-radius:4px;text-align:center;line-height:1.1;padding-top:2px;background:var(--bg)}.pt b{display:block;font-size:13px}
 table{border-collapse:collapse;font-size:13px}td,th{border:1px solid var(--b);padding:3px 6px;text-align:center}
 .ck{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.ck button{padding:12px 0}
+.psg{background:var(--bg);background:color-mix(in srgb,var(--a) 9%,var(--c));border-left:4px solid var(--a);border-radius:8px;padding:10px 12px;margin:10px 0;white-space:pre-wrap;line-height:1.6}
+.psg .m{font-weight:600;margin-bottom:4px}
+.qt{white-space:pre-wrap;margin:10px 0}
+pre.code{position:relative;background:#1e1e2e;color:#cdd6f4;border-radius:10px;padding:24px 12px 10px;margin:8px 0;overflow-x:auto;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;text-align:left}
+pre.code code{font:inherit}
+pre.code .lg{position:absolute;top:5px;right:10px;font-size:11px;color:#8b93b0;text-transform:uppercase;letter-spacing:.5px}
+code.ic{background:rgba(127,127,127,.2);border-radius:5px;padding:1px 5px;font:.9em ui-monospace,Menlo,Consolas,monospace}
+.hk{color:#cba6f7}.hs{color:#a6e3a1}.hn{color:#fab387}.hc{color:#7f849c;font-style:italic}.hf{color:#89b4fa}
 textarea{width:100%;min-height:200px;box-sizing:border-box;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:10px;padding:8px}
 </style></head><body><div id="app"></div><div id="modal"></div>
 <script>
 const SUBJ={history_kz:['История Казахстана','Қазақстан тарихы'],math_lit:['Математическая грамотность','Математикалық сауаттылық'],read_lit:['Грамотность чтения','Оқу сауаттылығы'],math:['Математика','Математика'],physics:['Физика','Физика'],chem:['Химия','Химия'],bio:['Биология','Биология'],geo:['География','География'],inf:['Информатика','Информатика'],world_hist:['Всемирная история','Дүниежүзі тарихы'],law:['Основы права','Құқық негіздері'],eng:['Английский язык','Ағылшын тілі'],rus:['Русский язык и литература','Орыс тілі мен әдебиеті'],kaz:['Казахский язык и литература','Қазақ тілі мен әдебиеті']};
-const S={title:['Пробный ЕНТ','Сынақ ҰБТ'],exam:['Тест','Тест'],train:['Тренировка','Жаттығу'],req:['Обязательные предметы','Міндетті пәндер'],pick:['Выбери 2 профильных предмета','2 бейіндік пәнді таңда'],info:['Профильный предмет: 30 вопросов по 1 баллу и 10 по 2 балла. Всего 140 баллов, 240 минут.','Бейіндік пән: 1 ұпайлық 30 және 2 ұпайлық 10 сұрақ. Барлығы 140 ұпай, 240 минут.'],start:['Начать','Бастау'],fin:['Завершить','Аяқтау'],cfin:['Завершить?','Аяқтайсыз ба?'],prev:['← Назад','← Артқа'],next:['Далее →','Келесі →'],q:['вопрос','сұрақ'],p1:['1 балл','1 ұпай'],p2:['2 балла, выбери все верные','2 ұпай, барлық дұрыс жауапты таңда'],res:['Результат','Нәтиже'],errs:['Ошибки','Қателер'],your:['Твой ответ','Сенің жауабың'],right:['Верно','Дұрыс жауап'],home:['На главную','Басты бетке'],calc:['Калькулятор','Калькулятор'],ptab:['Менделеев','Менделеев кестесі'],sol:['Растворимость','Ерігіштік'],act:['Ряд металлов','Металдар қатары'],note:['Черновик','Қара қағаз'],subj:['Предмет','Пән'],cnt:['Вопросов','Сұрақ саны'],tmr:['С таймером','Таймермен'],check:['Проверить','Тексеру'],load:['Загрузка банка вопросов…','Сұрақтар жүктелуде…'],miss:['Не хватает вопросов:','Сұрақ жеткіліксіз:'],go:['Начать с тем, что есть?','Бар сұрақпен бастаймыз ба?'],none:['В банке нет вопросов по выбранному предмету','Таңдалған пән бойынша сұрақ жоқ'],sl:['Р — растворимо, М — малорастворимо, Н — нерастворимо, – — разлагается / не существует','Р — ериді, М — аз ериді, Н — ерімейді, – — ыдырайды / жоқ'],al:['Активность убывает слева направо. Металлы до H вытесняют водород из кислот.','Белсенділік солдан оңға кемиді. H-ке дейінгі металдар қышқылдан сутекті ығыстырады.'],deg:['Углы в градусах','Бұрыштар градуспен']};
+const S={title:['Пробный ЕНТ','Сынақ ҰБТ'],exam:['Тест','Тест'],train:['Тренировка','Жаттығу'],req:['Обязательные предметы','Міндетті пәндер'],pick:['Выбери 2 профильных предмета','2 бейіндік пәнді таңда'],info:['Профильный предмет: 30 вопросов по 1 баллу и 10 по 2 балла. Всего 140 баллов, 240 минут.','Бейіндік пән: 1 ұпайлық 30 және 2 ұпайлық 10 сұрақ. Барлығы 140 ұпай, 240 минут.'],start:['Начать','Бастау'],fin:['Завершить','Аяқтау'],cfin:['Завершить?','Аяқтайсыз ба?'],prev:['← Назад','← Артқа'],next:['Далее →','Келесі →'],q:['вопрос','сұрақ'],p1:['1 балл','1 ұпай'],p2:['2 балла, выбери все верные','2 ұпай, барлық дұрыс жауапты таңда'],res:['Результат','Нәтиже'],errs:['Ошибки','Қателер'],your:['Твой ответ','Сенің жауабың'],right:['Верно','Дұрыс жауап'],home:['На главную','Басты бетке'],calc:['Калькулятор','Калькулятор'],ptab:['Менделеев','Менделеев кестесі'],sol:['Растворимость','Ерігіштік'],act:['Ряд металлов','Металдар қатары'],note:['Черновик','Қара қағаз'],subj:['Предмет','Пән'],cnt:['Вопросов','Сұрақ саны'],tmr:['С таймером','Таймермен'],check:['Проверить','Тексеру'],load:['Загрузка банка вопросов…','Сұрақтар жүктелуде…'],miss:['Не хватает вопросов:','Сұрақ жеткіліксіз:'],go:['Начать с тем, что есть?','Бар сұрақпен бастаймыз ба?'],none:['В банке нет вопросов по выбранному предмету','Таңдалған пән бойынша сұрақ жоқ'],sl:['Р — растворимо, М — малорастворимо, Н — нерастворимо, – — разлагается / не существует','Р — ериді, М — аз ериді, Н — ерімейді, – — ыдырайды / жоқ'],al:['Активность убывает слева направо. Металлы до H вытесняют водород из кислот.','Белсенділік солдан оңға кемиді. H-ке дейінгі металдар қышқылдан сутекті ығыстырады.'],deg:['Углы в градусах','Бұрыштар градуспен'],psg:['Текст','Мәтін']};
 let lang=(()=>{try{return localStorage.getItem('ent_lang')||'ru'}catch(e){return'ru'}})();
 const t=k=>S[k][lang=='kz'?1:0],sn=k=>SUBJ[k][lang=='kz'?1:0];
 const ql=k=>k=='eng'?'en':k=='kaz'?'kz':k=='rus'?'ru':lang;
@@ -40,14 +48,29 @@ const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){re
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const hid=q=>{let s=q.subject+q.lang+'|'+q.q.toLowerCase().replace(/\s+/g,' ').trim(),h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return h.toString(36)};
+const hid=q=>{let s=q.subject+q.lang+'|'+(q.text||'').slice(0,80)+'|'+q.q.toLowerCase().replace(/\s+/g,' ').trim(),h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return h.toString(36)};
 const $=s=>document.querySelector(s);
 let bank=[],ids=new Set(),seen=load('ent_seen',{}),T=null,tab='exam',prof=[],loaded=false,msg='',timer=null,tr={s:'history_kz',n:20,tm:true},NOTE='',CV='';
 const DEV=location.hash=='#dev';
 
+const KWS={py:'and as assert break class continue def del elif else except finally for from global if import in is lambda not or pass raise return try while with yield True False None',pas:'program var begin end if then else for to downto do while repeat until procedure function const array of integer real string boolean char div mod and or not true false nil',cpp:'int float double char bool void return if else for while do break continue include using namespace class struct const true false auto new delete public private',sql:'select from where insert into values update set delete create table order by group having and or not null join on as distinct limit like in between is count sum avg min max'};
+const KW={};for(const k in KWS)KW[k]=new Set(KWS[k].split(' ').map(x=>k=='py'||k=='cpp'?x:x.toLowerCase()));
+function hl(code,lang){
+  lang=(lang||'python').toLowerCase();const L=lang=='python'||lang=='py'?'py':lang=='pascal'||lang=='pas'?'pas':lang=='sql'?'sql':'cpp';
+  const cm=L=='py'?'#.*':L=='sql'?'--.*':L=='pas'?'\\/\\/.*|\\{[^}]*\\}':'\\/\\/.*';
+  const rest=/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)(?=\s*\()|([A-Za-z_]\w*)|([\s\S])/.source;
+  const re=new RegExp('('+cm+')|'+rest,'g'),ci=L=='py'||L=='cpp';
+  return code.replace(re,(m,c,s,n,f,id)=>{const e=esc(m);
+    if(c)return `<i class="hc">${e}</i>`;if(s)return `<span class="hs">${e}</span>`;if(n)return `<span class="hn">${e}</span>`;
+    if(f)return KW[L].has(ci?f:f.toLowerCase())?`<span class="hk">${e}</span>`:`<span class="hf">${e}</span>`;
+    if(id)return KW[L].has(ci?id:id.toLowerCase())?`<span class="hk">${e}</span>`:e;return e})}
+function md(s,inl){s=String(s);const bl=[];
+  if(!inl)s=s.replace(/\n?```(\w*)\n([\s\S]*?)\n?```\n?/g,(_,l,c)=>{bl.push(`<pre class="code"><span class="lg">${esc(l||'code')}</span><code>${hl(c,l)}</code></pre>`);return '\u0000'+(bl.length-1)+'\u0000'});
+  s=esc(s).replace(/`([^`\n]+)`/g,'<code class="ic">$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+  return s.replace(/\u0000(\d+)\u0000/g,(_,i)=>bl[+i])}
 function ingest(d){let a=0,s=0,e=0;for(const q of(Array.isArray(d)?d:d.questions||[])){
   if(!SUBJ[q.subject]||typeof q.q!='string'||!Array.isArray(q.options)||q.options.length<2||!Array.isArray(q.answer)||!q.answer.length||q.answer.some(x=>!Number.isInteger(x)||x<0||x>=q.options.length)){e++;continue}
-  const o={subject:q.subject,lang:q.lang||ql(q.subject),type:q.answer.length>1?'multi':'single',q:q.q,options:q.options.map(String),answer:q.answer};o.id=hid(o);
+  const o={subject:q.subject,lang:q.lang||ql(q.subject),type:q.answer.length>1?'multi':'single',text:typeof q.text=='string'?q.text:'',q:q.q,options:q.options.map(String),answer:q.answer};o.id=hid(o);
   if(ids.has(o.id)){s++;continue}ids.add(o.id);bank.push(o);a++}return[a,s,e]}
 async function loadBank(){try{const ix=await(await fetch('bank/index.json')).json();for(const f of ix){try{ingest(await(await fetch('bank/'+f)).json())}catch(e){}}}catch(e){}loaded=true;render()}
 async function imp(files){let r=[0,0,0];for(const f of files){try{const x=ingest(JSON.parse(await f.text()));r=r.map((v,i)=>v+x[i])}catch(e){r[2]++}}msg=`+${r[0]}, повторов: ${r[1]}, ошибок: ${r[2]}`;render()}
@@ -95,11 +118,11 @@ function renderTest(){
   const st=T.secs.length>1?`<div class="row">${T.secs.map((x,i)=>`<button class="${i==T.s?'on':''}" onclick="T.s=${i};T.i=0;render()">${sn(x.k)}</button>`).join('')}</div>`:'';
   const g=S_.qs.map((x,i)=>`<button class="${x.sel.length?'done':''} ${i==T.i?'on':''}" onclick="T.i=${i};render()">${i+1}</button>`).join('');
   const op=q.options.map((o,i)=>{let c=q.sel.includes(i)?'on':'';if(q.chk){if(q.answer.includes(i))c+=' okb';else if(q.sel.includes(i))c+=' badb'}
-    return `<button class="opt ${c}" onclick="ans(${i})">${mu?(q.sel.includes(i)?'☑ ':'☐ '):(q.sel.includes(i)?'◉ ':'○ ')}${esc(o)}</button>`}).join('');
+    return `<button class="opt ${c}" onclick="ans(${i})">${mu?(q.sel.includes(i)?'☑ ':'☐ '):(q.sel.includes(i)?'◉ ':'○ ')}${md(o,1)}</button>`}).join('');
   const ck=T.train&&mu&&!q.chk?`<button class="p" onclick="T.secs[T.s].qs[T.i].chk=1;render()">${t('check')}</button>`:'';
   $('#app').innerHTML=`<div class="bar"><b>${T.end?'⏱ <span id="tm"></span>':''}</b><button class="p" onclick="if(confirm(t('cfin')))finish()">${t('fin')}</button></div>
   <div class="row">${['calc','ptab','sol','act','note'].map(k=>`<button onclick="tool('${k}')">${t(k)}</button>`).join('')}</div>${st}
-  <div class="card"><div class="m">${sn(S_.k)} · ${t('q')} ${T.i+1}/${S_.qs.length} · ${mu?t('p2'):t('p1')}</div><p style="white-space:pre-wrap">${esc(q.q)}</p>${op}${ck}
+  <div class="card"><div class="m">${sn(S_.k)} · ${t('q')} ${T.i+1}/${S_.qs.length} · ${mu?t('p2'):t('p1')}</div>${q.text?`<div class="psg"><div class="m">📖 ${t('psg')}</div>${md(q.text)}</div>`:''}<div class="qt">${md(q.q)}</div>${op}${ck}
   <div class="row sp" style="margin-top:8px"><button onclick="nav(-1)">${t('prev')}</button><button onclick="nav(1)">${t('next')}</button></div></div><div class="grid">${g}</div>`;
   tick()}
 function ans(i){const q=T.secs[T.s].qs[T.i];if(q.chk)return;if(q.type=='multi'){const j=q.sel.indexOf(i);j>=0?q.sel.splice(j,1):q.sel.push(i)}else{q.sel=[i];if(T.train)q.chk=1}render()}
@@ -111,7 +134,7 @@ function renderRes(){
   let tot=0,max=0;
   const rows=T.secs.map(S_=>{const sc=S_.qs.reduce((a,q)=>a+score(q),0),m=S_.qs.reduce((a,q)=>a+mx(q),0);tot+=sc;max+=m;
     const bad=S_.qs.map((q,i)=>[q,i]).filter(([q])=>score(q)<mx(q));
-    const wr=bad.map(([q,i])=>`<div class="card"><div class="m">№${i+1}</div>${esc(q.q)}<div class="bad">${t('your')}: ${q.sel.length?q.sel.map(a=>esc(q.options[a])).join('; '):'—'}</div><div class="ok">${t('right')}: ${q.answer.map(a=>esc(q.options[a])).join('; ')}</div></div>`).join('');
+    const wr=bad.map(([q,i])=>`<div class="card"><div class="m">№${i+1}</div>${q.text?`<div class="psg">${md(q.text)}</div>`:''}<div class="qt">${md(q.q)}</div><div class="bad">${t('your')}: ${q.sel.length?q.sel.map(a=>md(q.options[a],1)).join('; '):'—'}</div><div class="ok">${t('right')}: ${q.answer.map(a=>md(q.options[a],1)).join('; ')}</div></div>`).join('');
     return `<div class="card"><div class="row sp"><b>${sn(S_.k)}</b><b>${sc}/${m}</b></div><details><summary class="m">${t('errs')} (${bad.length})</summary>${wr}</details></div>`}).join('');
   $('#app').innerHTML=head()+`<h2>${t('res')}: ${tot} / ${max}</h2>${rows}<button class="p" onclick="T=null;render()">${t('home')}</button>`}
 
