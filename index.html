@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>ЕНТ / ҰБТ</title>
+<style>
+:root{--bg:#f6f7fb;--c:#fff;--t:#1b1f2a;--m:#6b7280;--a:#2563eb;--ok:#16a34a;--bad:#dc2626;--b:#e3e6ee;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--c:#1a1f2b;--t:#e8eaf0;--m:#9aa3b2;--a:#6ea0ff;--b:#2a3142}}
+:root[data-theme="dark"]{--bg:#0f1218;--c:#1a1f2b;--t:#e8eaf0;--m:#9aa3b2;--a:#6ea0ff;--b:#2a3142}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--t);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{max-width:720px;margin:0 auto;padding:12px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:14px;margin:10px 0}
+h1{font-size:22px;margin:8px 0}h2{font-size:18px;margin:4px 0 8px}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}
+button,select,input{font:inherit;color:var(--t)}
+button{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:8px 11px;cursor:pointer}
+button.p{background:var(--a);color:#fff;border-color:var(--a)}button:disabled{opacity:.5}
+button.on{border-color:var(--a);box-shadow:inset 0 0 0 1px var(--a)}
+.opt{display:block;width:100%;text-align:left;margin:6px 0}
+.okb{border-color:var(--ok)!important;box-shadow:inset 0 0 0 2px var(--ok)!important}.badb{border-color:var(--bad)!important;box-shadow:inset 0 0 0 2px var(--bad)!important}
+.grid{display:flex;flex-wrap:wrap;gap:5px}.grid button{width:38px;padding:6px 0;text-align:center}
+.done{background:var(--a);color:#fff;border-color:var(--a)}
+.m{color:var(--m);font-size:14px}.ok{color:var(--ok)}.bad{color:var(--bad)}
+select,input[type=number],input[type=text]{background:var(--c);border:1px solid var(--b);border-radius:10px;padding:8px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:6px 0;z-index:2;display:flex;justify-content:space-between;align-items:center}
+.mb{position:fixed;inset:0;background:rgba(0,0,0,.55);overflow:auto;z-index:9;padding:calc(10px + env(safe-area-inset-top,0px)) 10px 10px}
+.mc{max-width:720px;margin:0 auto}
+.sc{overflow-x:auto}
+.pt{display:grid;grid-template-columns:repeat(18,34px);grid-auto-rows:40px;gap:2px;font-size:10px;width:max-content}
+.pt div{border:1px solid var(--b);border-radius:4px;text-align:center;line-height:1.1;padding-top:2px;background:var(--bg)}.pt b{display:block;font-size:13px}
+table{border-collapse:collapse;font-size:13px}td,th{border:1px solid var(--b);padding:3px 6px;text-align:center}
+.ck{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.ck button{padding:12px 0}
+textarea{width:100%;min-height:200px;box-sizing:border-box;background:var(--bg);color:var(--t);border:1px solid var(--b);border-radius:10px;padding:8px}
+</style></head><body><div id="app"></div><div id="modal"></div>
+<script>
+const SUBJ={history_kz:['История Казахстана','Қазақстан тарихы'],math_lit:['Математическая грамотность','Математикалық сауаттылық'],read_lit:['Грамотность чтения','Оқу сауаттылығы'],math:['Математика','Математика'],physics:['Физика','Физика'],chem:['Химия','Химия'],bio:['Биология','Биология'],geo:['География','География'],inf:['Информатика','Информатика'],world_hist:['Всемирная история','Дүниежүзі тарихы'],law:['Основы права','Құқық негіздері'],eng:['Английский язык','Ағылшын тілі'],rus:['Русский язык и литература','Орыс тілі мен әдебиеті'],kaz:['Казахский язык и литература','Қазақ тілі мен әдебиеті']};
+const S={title:['Пробный ЕНТ','Сынақ ҰБТ'],exam:['Тест','Тест'],train:['Тренировка','Жаттығу'],req:['Обязательные предметы','Міндетті пәндер'],pick:['Выбери 2 профильных предмета','2 бейіндік пәнді таңда'],info:['Профильный предмет: 30 вопросов по 1 баллу и 10 по 2 балла. Всего 140 баллов, 240 минут.','Бейіндік пән: 1 ұпайлық 30 және 2 ұпайлық 10 сұрақ. Барлығы 140 ұпай, 240 минут.'],start:['Начать','Бастау'],fin:['Завершить','Аяқтау'],cfin:['Завершить?','Аяқтайсыз ба?'],prev:['← Назад','← Артқа'],next:['Далее →','Келесі →'],q:['вопрос','сұрақ'],p1:['1 балл','1 ұпай'],p2:['2 балла, выбери все верные','2 ұпай, барлық дұрыс жауапты таңда'],res:['Результат','Нәтиже'],errs:['Ошибки','Қателер'],your:['Твой ответ','Сенің жауабың'],right:['Верно','Дұрыс жауап'],home:['На главную','Басты бетке'],calc:['Калькулятор','Калькулятор'],ptab:['Менделеев','Менделеев кестесі'],sol:['Растворимость','Ерігіштік'],act:['Ряд металлов','Металдар қатары'],note:['Черновик','Қара қағаз'],subj:['Предмет','Пән'],cnt:['Вопросов','Сұрақ саны'],tmr:['С таймером','Таймермен'],check:['Проверить','Тексеру'],load:['Загрузка банка вопросов…','Сұрақтар жүктелуде…'],miss:['Не хватает вопросов:','Сұрақ жеткіліксіз:'],go:['Начать с тем, что есть?','Бар сұрақпен бастаймыз ба?'],none:['В банке нет вопросов по выбранному предмету','Таңдалған пән бойынша сұрақ жоқ'],sl:['Р — растворимо, М — малорастворимо, Н — нерастворимо, – — разлагается / не существует','Р — ериді, М — аз ериді, Н — ерімейді, – — ыдырайды / жоқ'],al:['Активность убывает слева направо. Металлы до H вытесняют водород из кислот.','Белсенділік солдан оңға кемиді. H-ке дейінгі металдар қышқылдан сутекті ығыстырады.'],deg:['Углы в градусах','Бұрыштар градуспен']};
+let lang=(()=>{try{return localStorage.getItem('ent_lang')||'ru'}catch(e){return'ru'}})();
+const t=k=>S[k][lang=='kz'?1:0],sn=k=>SUBJ[k][lang=='kz'?1:0];
+const ql=k=>k=='eng'?'en':k=='kaz'?'kz':k=='rus'?'ru':lang;
+const PROF=Object.keys(SUBJ).slice(3),FIX={history_kz:20,math_lit:10,read_lit:10};
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const hid=q=>{let s=q.subject+q.lang+'|'+q.q.toLowerCase().replace(/\s+/g,' ').trim(),h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return h.toString(36)};
+const $=s=>document.querySelector(s);
+let bank=[],ids=new Set(),seen=load('ent_seen',{}),T=null,tab='exam',prof=[],loaded=false,msg='',timer=null,tr={s:'history_kz',n:20,tm:true},NOTE='',CV='';
+const DEV=location.hash=='#dev';
+
+function ingest(d){let a=0,s=0,e=0;for(const q of(Array.isArray(d)?d:d.questions||[])){
+  if(!SUBJ[q.subject]||typeof q.q!='string'||!Array.isArray(q.options)||q.options.length<2||!Array.isArray(q.answer)||!q.answer.length||q.answer.some(x=>!Number.isInteger(x)||x<0||x>=q.options.length)){e++;continue}
+  const o={subject:q.subject,lang:q.lang||ql(q.subject),type:q.answer.length>1?'multi':'single',q:q.q,options:q.options.map(String),answer:q.answer};o.id=hid(o);
+  if(ids.has(o.id)){s++;continue}ids.add(o.id);bank.push(o);a++}return[a,s,e]}
+async function loadBank(){try{const ix=await(await fetch('bank/index.json')).json();for(const f of ix){try{ingest(await(await fetch('bank/'+f)).json())}catch(e){}}}catch(e){}loaded=true;render()}
+async function imp(files){let r=[0,0,0];for(const f of files){try{const x=ingest(JSON.parse(await f.text()));r=r.map((v,i)=>v+x[i])}catch(e){r[2]++}}msg=`+${r[0]}, повторов: ${r[1]}, ошибок: ${r[2]}`;render()}
+
+function setL(l){lang=l;try{localStorage.setItem('ent_lang',l)}catch(e){}render()}
+function head(){return `<div class="row sp"><h1>${t('title')}</h1><div class="row"><button class="${lang=='ru'?'on':''}" onclick="setL('ru')">RU</button><button class="${lang=='kz'?'on':''}" onclick="setL('kz')">ҚАЗ</button></div></div>`}
+function render(){
+  if(T)return T.res?renderRes():renderTest();
+  let h=head();
+  if(!loaded){$('#app').innerHTML=h+`<p class="m">${t('load')}</p>`;return}
+  h+=`<div class="row">${['exam','train'].map(k=>`<button class="${tab==k?'on':''}" onclick="tab='${k}';render()">${t(k)}</button>`).join('')}</div>`;
+  h+=tab=='exam'?homeView():trainView();
+  if(!bank.length||DEV)h+=`<div class="card"><b>DEV</b> bank: ${bank.length}<br><input type="file" accept=".json" multiple onchange="imp(this.files)"><p class="m">${msg}</p></div>`;
+  $('#app').innerHTML=h;
+}
+function homeView(){
+  const chips=PROF.map(k=>`<button class="${prof.includes(k)?'on':''}" onclick="tp('${k}')">${sn(k)}</button>`).join('');
+  return `<div class="card"><h2>${t('req')}</h2><div class="m">${Object.keys(FIX).map(k=>sn(k)+' ('+FIX[k]+')').join(', ')}</div></div>
+  <div class="card"><h2>${t('pick')}</h2><div class="row">${chips}</div><p class="m">${t('info')}</p><button class="p" ${prof.length==2?'':'disabled'} onclick="start()">${t('start')}</button> <span class="bad">${msg}</span></div>`}
+function tp(k){const i=prof.indexOf(k);if(i>=0)prof.splice(i,1);else{if(prof.length==2)prof.shift();prof.push(k)}render()}
+function trainView(){
+  const so=Object.keys(SUBJ).map(k=>`<option value="${k}" ${tr.s==k?'selected':''}>${sn(k)}</option>`).join('');
+  return `<div class="card"><div class="row"><span>${t('subj')}:</span><select onchange="tr.s=this.value">${so}</select></div>
+  <div class="row" style="margin:10px 0"><span>${t('cnt')}:</span><select onchange="tr.n=+this.value">${[10,20,30,40].map(n=>`<option ${tr.n==n?'selected':''}>${n}</option>`).join('')}</select>
+  <label><input type="checkbox" ${tr.tm?'checked':''} onchange="tr.tm=this.checked"> ${t('tmr')}</label></div>
+  <button class="p" onclick="startTr()">${t('start')}</button> <span class="bad">${msg}</span></div>`}
+function pick(sub,type,n){
+  const pool=bank.filter(q=>q.subject==sub&&q.lang==ql(sub)&&(!type||q.type==type)),sn_=seen[sub]||[];
+  let out=shuf(pool.filter(q=>!sn_.includes(q.id))).slice(0,n);
+  if(out.length<n){seen[sub]=[];out=out.concat(shuf(pool.filter(q=>!out.includes(q))).slice(0,n-out.length))}return out}
+const wrap=a=>a.map(q=>({...q,sel:[]}));
+function begin(secs,end,train){msg='';T={secs,s:0,i:0,end,train};clearInterval(timer);timer=setInterval(tick,1000);window.scrollTo(0,0);render()}
+function start(){
+  const secs=[],miss=[];
+  for(const k of[...Object.keys(FIX),...prof]){const plan=FIX[k]?[['single',FIX[k]]]:[['single',30],['multi',10]];let qs=[];
+    for(const[ty,n]of plan){const p=pick(k,ty,n);if(p.length<n)miss.push(`${sn(k)} (${ty=='multi'?2:1}): ${p.length}/${n}`);qs=qs.concat(p)}secs.push({k,qs:wrap(qs)})}
+  if(secs.some(s=>!s.qs.length)){msg=t('none');return render()}
+  if(miss.length&&!confirm(t('miss')+'\n'+miss.join('\n')+'\n'+t('go')))return;
+  begin(secs,Date.now()+240*60000,false)}
+function startTr(){const qs=pick(tr.s,null,tr.n);if(!qs.length){msg=t('none');return render()}
+  begin([{k:tr.s,qs:wrap(qs)}],tr.tm?Date.now()+Math.round(qs.length*1.5*60000):0,true)}
+function tick(){if(!T||T.res)return clearInterval(timer);if(!T.end)return;const r=T.end-Date.now();if(r<=0)return finish();const e=$('#tm');if(e)e.textContent=Math.floor(r/3600000)+':'+String(Math.floor(r/60000)%60).padStart(2,'0')+':'+String(Math.floor(r/1000)%60).padStart(2,'0')}
+function renderTest(){
+  const S_=T.secs[T.s],q=S_.qs[T.i],mu=q.type=='multi';
+  const st=T.secs.length>1?`<div class="row">${T.secs.map((x,i)=>`<button class="${i==T.s?'on':''}" onclick="T.s=${i};T.i=0;render()">${sn(x.k)}</button>`).join('')}</div>`:'';
+  const g=S_.qs.map((x,i)=>`<button class="${x.sel.length?'done':''} ${i==T.i?'on':''}" onclick="T.i=${i};render()">${i+1}</button>`).join('');
+  const op=q.options.map((o,i)=>{let c=q.sel.includes(i)?'on':'';if(q.chk){if(q.answer.includes(i))c+=' okb';else if(q.sel.includes(i))c+=' badb'}
+    return `<button class="opt ${c}" onclick="ans(${i})">${mu?(q.sel.includes(i)?'☑ ':'☐ '):(q.sel.includes(i)?'◉ ':'○ ')}${esc(o)}</button>`}).join('');
+  const ck=T.train&&mu&&!q.chk?`<button class="p" onclick="T.secs[T.s].qs[T.i].chk=1;render()">${t('check')}</button>`:'';
+  $('#app').innerHTML=`<div class="bar"><b>${T.end?'⏱ <span id="tm"></span>':''}</b><button class="p" onclick="if(confirm(t('cfin')))finish()">${t('fin')}</button></div>
+  <div class="row">${['calc','ptab','sol','act','note'].map(k=>`<button onclick="tool('${k}')">${t(k)}</button>`).join('')}</div>${st}
+  <div class="card"><div class="m">${sn(S_.k)} · ${t('q')} ${T.i+1}/${S_.qs.length} · ${mu?t('p2'):t('p1')}</div><p style="white-space:pre-wrap">${esc(q.q)}</p>${op}${ck}
+  <div class="row sp" style="margin-top:8px"><button onclick="nav(-1)">${t('prev')}</button><button onclick="nav(1)">${t('next')}</button></div></div><div class="grid">${g}</div>`;
+  tick()}
+function ans(i){const q=T.secs[T.s].qs[T.i];if(q.chk)return;if(q.type=='multi'){const j=q.sel.indexOf(i);j>=0?q.sel.splice(j,1):q.sel.push(i)}else{q.sel=[i];if(T.train)q.chk=1}render()}
+function nav(d){const S_=T.secs[T.s];let i=T.i+d;if(i<0){if(T.s>0){T.s--;i=T.secs[T.s].qs.length-1}else i=0}else if(i>=S_.qs.length){if(T.s<T.secs.length-1){T.s++;i=0}else i=S_.qs.length-1}T.i=i;render()}
+const mx=q=>q.type=='multi'?2:1;
+function score(q){const r=q.sel.filter(a=>q.answer.includes(a)).length,w=q.sel.length-r;if(q.type=='single')return r?1:0;if(w==0&&r==q.answer.length)return 2;return w==0&&r>0?1:0}
+function finish(){clearInterval(timer);T.res=true;for(const S_ of T.secs)seen[S_.k]=(seen[S_.k]||[]).concat(S_.qs.map(q=>q.id));save('ent_seen',seen);cl();window.scrollTo(0,0);render()}
+function renderRes(){
+  let tot=0,max=0;
+  const rows=T.secs.map(S_=>{const sc=S_.qs.reduce((a,q)=>a+score(q),0),m=S_.qs.reduce((a,q)=>a+mx(q),0);tot+=sc;max+=m;
+    const bad=S_.qs.map((q,i)=>[q,i]).filter(([q])=>score(q)<mx(q));
+    const wr=bad.map(([q,i])=>`<div class="card"><div class="m">№${i+1}</div>${esc(q.q)}<div class="bad">${t('your')}: ${q.sel.length?q.sel.map(a=>esc(q.options[a])).join('; '):'—'}</div><div class="ok">${t('right')}: ${q.answer.map(a=>esc(q.options[a])).join('; ')}</div></div>`).join('');
+    return `<div class="card"><div class="row sp"><b>${sn(S_.k)}</b><b>${sc}/${m}</b></div><details><summary class="m">${t('errs')} (${bad.length})</summary>${wr}</details></div>`}).join('');
+  $('#app').innerHTML=head()+`<h2>${t('res')}: ${tot} / ${max}</h2>${rows}<button class="p" onclick="T=null;render()">${t('home')}</button>`}
+
+/* tools */
+const EL=[...'H1.008 He4.003 Li6.94 Be9.012 B10.81 C12.011 N14.007 O15.999 F18.998 Ne20.180 Na22.990 Mg24.305 Al26.982 Si28.085 P30.974 S32.06 Cl35.45 Ar39.948 K39.098 Ca40.078 Sc44.956 Ti47.867 V50.942 Cr51.996 Mn54.938 Fe55.845 Co58.933 Ni58.693 Cu63.546 Zn65.38 Ga69.723 Ge72.630 As74.922 Se78.971 Br79.904 Kr83.798 Rb85.468 Sr87.62 Y88.906 Zr91.224 Nb92.906 Mo95.95 Tc98 Ru101.07 Rh102.91 Pd106.42 Ag107.87 Cd112.41 In114.82 Sn118.71 Sb121.76 Te127.60 I126.90 Xe131.29 Cs132.91 Ba137.33 La138.91 Ce140.12 Pr140.91 Nd144.24 Pm145 Sm150.36 Eu151.96 Gd157.25 Tb158.93 Dy162.50 Ho164.93 Er167.26 Tm168.93 Yb173.05 Lu174.97 Hf178.49 Ta180.95 W183.84 Re186.21 Os190.23 Ir192.22 Pt195.08 Au196.97 Hg200.59 Tl204.38 Pb207.2 Bi208.98 Po209 At210 Rn222 Fr223 Ra226 Ac227 Th232.04 Pa231.04 U238.03 Np237 Pu244 Am243 Cm247 Bk247 Cf251 Es252 Fm257 Md258 No259 Lr266 Rf267 Db268 Sg269 Bh270 Hs277 Mt278 Ds281 Rg282 Cn285 Nh286 Fl289 Mc290 Lv293 Ts294 Og294'.matchAll(/([A-Z][a-z]?)([\d.]+)/g)].map(m=>[m[1],m[2]]);
+function pos(z){if(z>=57&&z<=71)return[9,z-54];if(z>=89&&z<=103)return[10,z-86];if(z==1)return[1,1];if(z==2)return[1,18];
+  const E=[2,10,18,36,54,86,118],p=E.findIndex(e=>z<=e)+1,i=z-E[p-2];if(p<=3)return[p,i<=2?i:i+10];if(p<=5)return[p,i];return[p,i<=2?i:i-14]}
+const AN=['OH⁻','F⁻','Cl⁻','Br⁻','I⁻','S²⁻','SO₃²⁻','SO₄²⁻','CO₃²⁻','SiO₃²⁻','PO₄³⁻','NO₃⁻'];
+const SL={'H⁺':'-РРРРРРРРНРР','Li⁺':'РМРРРРРРРРНР','Na⁺':'РРРРРРРРРРРР','K⁺':'РРРРРРРРРРРР','NH₄⁺':'РРРРРРРРР-РР','Ba²⁺':'РМРРРРНННННР','Ca²⁺':'МНРРРМНМННН'+'Р','Mg²⁺':'ННРРР-НРНННР','Zn²⁺':'НМРРРННРНННР','Cu²⁺':'НМРР-Н-Р-ННР','Fe²⁺':'НМРРРННРНННР','Fe³⁺':'ННРР---Р-ННР','Al³⁺':'НМРРР--Р-ННР','Ag⁺':'-РНННННМНННР','Pb²⁺':'ННММННННННН'+'Р'};
+function tool(k){
+  const keys=['H','He'];let b='';
+  if(k=='calc'){const bt=['7','8','9','/','sqrt(','4','5','6','*','^','1','2','3','-','(','0','.','+','π',')','sin(','cos(','tan(','log(','ln('];
+    b=`<input type="text" id="cd" value="${esc(CV)}" style="width:100%;box-sizing:border-box;font-size:20px;text-align:right" onkeydown="if(event.key=='Enter')ce()"><div class="m">${t('deg')}</div><div class="ck" style="margin-top:6px">${bt.map(x=>`<button onclick="ci('${x}')">${x.replace('*','×').replace('/','÷')}</button>`).join('')}<button onclick="$('#cd').value='';CV=''">C</button><button onclick="const e=$('#cd');e.value=e.value.slice(0,-1)">⌫</button><button class="p" onclick="ce()">=</button></div>`}
+  else if(k=='ptab'){b=`<div class="sc"><div class="pt">${EL.map((e,i)=>{const[r,c]=pos(i+1);return `<div style="grid-row:${r};grid-column:${c}"><span>${i+1}</span><b>${e[0]}</b>${e[1]}</div>`}).join('')}</div></div>`}
+  else if(k=='sol'){b=`<div class="sc"><table><tr><th></th>${AN.map(a=>`<th>${a}</th>`).join('')}</tr>${Object.entries(SL).map(([c,r])=>`<tr><th>${c}</th>${[...r].map(x=>`<td class="${x=='Р'?'ok':x=='Н'?'bad':'m'}">${x}</td>`).join('')}</tr>`).join('')}</table></div><p class="m">${t('sl')}</p>`}
+  else if(k=='act'){b=`<p style="font-size:18px;letter-spacing:1px">Li K Ba Ca Na Mg Al Mn Zn Cr Fe Ni Sn Pb (H) Cu Hg Ag Pt Au</p><p class="m">${t('al')}</p>`}
+  else b=`<textarea oninput="NOTE=this.value">${esc(NOTE)}</textarea>`;
+  $('#modal').innerHTML=`<div class="mb" onclick="if(event.target==this)cl()"><div class="card mc"><div class="row sp"><b>${t(k)}</b><button onclick="cl()">✕</button></div>${b}</div></div>`}
+function cl(){const e=$('#cd');if(e)CV=e.value;$('#modal').innerHTML=''}
+function ci(x){const e=$('#cd');if(e.value=='Error')e.value='';e.value+=x}
+function ce(){const e=$('#cd');let s=e.value.replace(/π/g,'PI').replace(/\^/g,'**').replace(/,/g,'.').replace(/÷/g,'/').replace(/×/g,'*');
+  if(s.replace(/\b(sin|cos|tan|log|ln|sqrt|PI)\b/g,'').replace(/[\d+\-*\/().\s]/g,'')){e.value='Error';return}
+  try{const d=Math.PI/180,r=new Function('sin','cos','tan','log','ln','sqrt','PI','return '+s)(x=>Math.sin(x*d),x=>Math.cos(x*d),x=>Math.tan(x*d),Math.log10,Math.log,Math.sqrt,Math.PI);e.value=Number.isFinite(r)?+r.toPrecision(12):'Error'}catch(x){e.value='Error'}}
+loadBank();render();
+</script></body></html>
